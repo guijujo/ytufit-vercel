@@ -1,0 +1,29 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import { CalendarDays, Check, ChevronDown, Clock3, MoreHorizontal, Plus, Search, UserRound, X } from 'lucide-react'
+
+type Attendance = { name: string; initials: string; tone: string; date: string; time: string; status: 'Presente' | 'Tarde' | 'Ausente'; method: 'QR' | 'Manual' | 'App'; plan: string; streak: string }
+
+const records: Attendance[] = [
+  { name: 'Luciano Romero', initials: 'LR', tone: 'avatar-purple', date: '07/09/2026', time: '09:42', status: 'Presente', method: 'QR', plan: 'Plan 5x semana', streak: '8 días' },
+  { name: 'María Solís', initials: 'MS', tone: 'avatar-blue', date: '07/09/2026', time: '08:17', status: 'Presente', method: 'App', plan: 'Pase libre', streak: '5 días' },
+  { name: 'Tomás Núñez', initials: 'TN', tone: 'avatar-orange', date: '07/09/2026', time: '07:56', status: 'Tarde', method: 'Manual', plan: 'Plan 3x semana', streak: '0 días' },
+  { name: 'Carla Villalba', initials: 'CV', tone: 'avatar-green', date: '06/09/2026', time: '18:20', status: 'Presente', method: 'QR', plan: 'Pase libre', streak: '12 días' },
+  { name: 'Juan Pérez', initials: 'JP', tone: 'avatar-blue', date: '06/09/2026', time: '17:45', status: 'Presente', method: 'App', plan: 'Plan 3x semana', streak: '3 días' },
+  { name: 'Sofía Acosta', initials: 'SA', tone: 'avatar-purple', date: '05/09/2026', time: '10:12', status: 'Ausente', method: 'Manual', plan: '12 accesos', streak: '1 día' },
+]
+
+function StatusBadge({ status }: { status: Attendance['status'] }) { return <span className={`attendance-status attendance-status-${status.toLowerCase()}`}><i />{status}</span> }
+
+function ManualModal({ onClose }: { onClose: () => void }) {
+  return <div className="attendance-overlay" onMouseDown={event => event.currentTarget === event.target && onClose()}><section className="attendance-modal" role="dialog" aria-modal="true" aria-labelledby="attendance-modal-title"><header><div><p className="eyebrow">Asistencia</p><h2 id="attendance-modal-title">Registrar asistencia</h2></div><button className="icon-button" onClick={onClose} aria-label="Cerrar"><X /></button></header><div className="attendance-form"><label>Socio<select defaultValue=""><option value="" disabled>Seleccioná un socio</option>{records.map(record => <option key={record.name}>{record.name}</option>)}</select></label><div className="attendance-form-row"><label>Fecha<input type="date" defaultValue="2026-09-07" /></label><label>Hora<input type="time" defaultValue="10:30" /></label></div><div className="attendance-preview"><UserRound /><div><strong>El estado se actualizará automáticamente</strong><span>El registro manual quedará visible en la actividad del socio.</span></div></div></div><footer><button className="secondary-button" onClick={onClose}>Cancelar</button><button className="primary-button" onClick={onClose}><Check />Guardar asistencia</button></footer></section></div>
+}
+
+export function AttendanceModule() {
+  const [query, setQuery] = useState('')
+  const [status, setStatus] = useState('Todos')
+  const [modal, setModal] = useState(false)
+  const filtered = useMemo(() => records.filter(record => record.name.toLowerCase().includes(query.toLowerCase()) && (status === 'Todos' || record.status === status)), [query, status])
+  return <div className="attendance-module"><div className="page-heading"><div><p className="eyebrow">Potencia Fitness · Operaciones</p><h1>Asistencia</h1><p className="subtitle">Controlá el movimiento del gimnasio y el presentismo de tus socios.</p></div><button className="primary-button" onClick={() => setModal(true)}><Plus />Registrar asistencia</button></div><div className="attendance-stats"><div><span>Asistencias hoy</span><strong>86</strong><small>+12,5% vs. ayer</small></div><div><span>Presentes ahora</span><strong>24</strong><small>Capacidad saludable</small></div><div><span>Promedio semanal</span><strong>78,4%</strong><small>+4,2% vs. semana anterior</small></div><div><span>Último registro</span><strong>09:42</strong><small>Luciano Romero</small></div></div><div className="attendance-toolbar"><label className="attendance-search"><Search /><input aria-label="Buscar asistencia" placeholder="Buscar socio" value={query} onChange={event => setQuery(event.target.value)} /></label><div className="attendance-filter-group" role="group" aria-label="Filtrar por estado">{['Todos', 'Presente', 'Tarde', 'Ausente'].map(item => <button key={item} className={status === item ? 'attendance-filter-active' : ''} onClick={() => setStatus(item)}>{item}</button>)}</div><button className="attendance-date"><CalendarDays />Hoy, 7 sep <ChevronDown /></button></div><section className="attendance-table-wrap"><div className="attendance-table-heading"><div><h2>Registro del día</h2><p>{filtered.length} registros encontrados · Lunes 7 de septiembre de 2026</p></div><button className="secondary-button"><Clock3 />Historial</button></div><div className="attendance-table-scroll"><table><thead><tr><th>Socio</th><th>Estado</th><th>Hora</th><th>Método</th><th>Membresía</th><th>Streak</th><th><span className="sr-only">Acciones</span></th></tr></thead><tbody>{filtered.map(record => <tr key={record.name}><td><div className="attendance-member"><span className={`avatar ${record.tone}`}>{record.initials}</span><strong>{record.name}</strong></div></td><td><StatusBadge status={record.status} /></td><td><b>{record.time}</b><small>{record.date}</small></td><td><span className="attendance-method">{record.method}</span></td><td>{record.plan}</td><td><span className="attendance-streak">{record.streak}</span></td><td><button className="attendance-more" aria-label={`Acciones para ${record.name}`}><MoreHorizontal /></button></td></tr>)}</tbody></table></div></section>{modal && <ManualModal onClose={() => setModal(false)} />}</div>
+}
