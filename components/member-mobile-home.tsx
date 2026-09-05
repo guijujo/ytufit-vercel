@@ -35,7 +35,7 @@ function StreakCard({ onOpen }: { onOpen: () => void }) {
   </section>
 }
 
-function MemberHome({ onScreen, onProgress }: { onScreen: (screen: MemberScreen) => void; onProgress?: () => void }) {
+function MemberHome({ onScreen, onProgress, onBenefits }: { onScreen: (screen: MemberScreen) => void; onProgress?: () => void; onBenefits?: () => void }) {
   return <>
     <header className="mobile-header member-home-header"><div><p className="eyebrow">Potencia Fitness · Villa Crespo</p><h2>¡Hola, María!</h2></div><button className="mobile-bell" aria-label="Notificaciones"><Bell /><span /></button></header>
     <div className="member-scroll">
@@ -45,7 +45,7 @@ function MemberHome({ onScreen, onProgress }: { onScreen: (screen: MemberScreen)
       <StreakCard onOpen={() => onScreen('streak')} />
       <section className="member-card progress-summary"><div className="member-card-heading"><div><p className="member-label">ESTA SEMANA</p><h2>Tu progreso</h2></div><button className="card-link">Ver progreso <ChevronRight /></button></div><div className="progress-summary-grid"><div><strong>3</strong><span>Entrenamientos</span></div><div><strong>3</strong><span>Asistencias</span></div><div><strong>12.4k</strong><span>Volumen total</span></div></div></section>
     </div>
-    <MobileBottomNavigation active="Inicio" onSelect={item => { if (item === 'Entrenar') onScreen('training'); if (item === 'Progreso') onProgress?.() }} />
+    <MobileBottomNavigation active="Inicio" onSelect={item => { if (item === 'Entrenar') onScreen('training'); if (item === 'Progreso') onProgress?.(); if (item === 'Beneficios') onBenefits?.() }} />
   </>
 }
 
@@ -92,9 +92,9 @@ function MobileBottomNavigation({ active, onSelect }: { active: string; onSelect
   return <nav className="mobile-bottom-nav" aria-label="Navegación del socio">{items.map(({ label, icon: Icon }) => <button key={label} className={active === label ? 'bottom-nav-active' : ''} onClick={() => onSelect(label)} aria-current={active === label ? 'page' : undefined}><Icon aria-hidden="true" /><span>{label}</span></button>)}</nav>
 }
 
-export function MemberMobileHome({ onProgress }: { onProgress?: () => void }) {
+export function MemberMobileHome({ onProgress, onBenefits }: { onProgress?: () => void; onBenefits?: () => void }) {
   const [screen, setScreen] = useState<MemberScreen>('home')
-  return <div className="mobile-frame member-mobile-system">{screen === 'home' && <MemberHome onScreen={setScreen} onProgress={onProgress} />}{screen === 'training' && <MemberTrainingRoutine onBack={() => setScreen('home')} onStart={() => setScreen('workout')} />}{screen === 'streak' && <StreakDetail onBack={() => setScreen('home')} />}{screen === 'workout' && <ActiveWorkout onBack={() => setScreen('home')} />}</div>
+  return <div className="mobile-frame member-mobile-system">{screen === 'home' && <MemberHome onScreen={setScreen} onProgress={onProgress} onBenefits={onBenefits} />}{screen === 'training' && <MemberTrainingRoutine onBack={() => setScreen('home')} onStart={() => setScreen('workout')} />}{screen === 'streak' && <StreakDetail onBack={() => setScreen('home')} />}{screen === 'workout' && <ActiveWorkout onBack={() => setScreen('home')} />}</div>
 }
 
 export default MemberMobileHome
