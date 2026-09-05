@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Bell, Check, ChevronRight, Dumbbell, Flame, Play, Snowflake } from 'lucide-react'
+import { ArrowLeft, Bell, Check, ChartNoAxesColumnIncreasing, ChevronRight, Dumbbell, Flame, Gift, House, Play, Snowflake, UserRound } from 'lucide-react'
 
 type MemberScreen = 'home' | 'streak' | 'workout'
 
@@ -36,7 +36,7 @@ function StreakCard({ onOpen }: { onOpen: () => void }) {
 
 function MemberHome({ onScreen }: { onScreen: (screen: MemberScreen) => void }) {
   return <>
-    <header className="mobile-header member-home-header"><div><p className="eyebrow">Potencia Fitness</p><h2>Hola, Juan</h2></div><button className="mobile-bell" aria-label="Notificaciones"><Bell /><span /></button></header>
+    <header className="mobile-header member-home-header"><div><p className="eyebrow">Potencia Fitness · Villa Crespo</p><h2>¡Hola, María!</h2></div><button className="mobile-bell" aria-label="Notificaciones"><Bell /><span /></button></header>
     <div className="member-scroll">
       <section className="membership-mobile membership-priority"><div><p className="membership-kicker">MEMBRESÍA ACTIVA</p><h3>Plan 3x semana</h3><p className="membership-expiry">Vence el 30/09/2026</p></div><div className="mini-y" aria-hidden="true">Y</div></section>
       <div className="mobile-section-heading"><div><p className="member-label">HOY, LUNES 7 DE SEPTIEMBRE</p><h2>Tu entrenamiento</h2></div><button onClick={() => onScreen('workout')}>Ver rutina</button></div>
@@ -53,11 +53,42 @@ function StreakDetail({ onBack }: { onBack: () => void }) {
 }
 
 function ActiveWorkout({ onBack }: { onBack: () => void }) {
-  return <><MobileHeader title="Press de banca" onBack={onBack} /><div className="member-scroll workout-scroll"><div className="workout-step"><span>Ejercicio 2 de 6</span><strong>33%</strong></div><div className="workout-progress-line"><div /></div><div className="active-exercise-visual"><Dumbbell /><p>PECHO · BARRA OLÍMPICA</p></div><div className="exercise-title"><h2>Press de banca</h2><p>Completá las series con control.</p></div><div className="series-table"><div className="series-head"><span>Serie</span><span>Kg</span><span>Reps</span><span>Estado</span></div>{[['1','50','10',true],['2','50','10',true],['3','55','',false]].map(([set, kg, reps, done]) => <div className="series-row" key={set as string}><strong>{set as string}</strong><input aria-label={`Peso serie ${set}`} defaultValue={kg as string} /><input aria-label={`Repeticiones serie ${set}`} defaultValue={reps as string} placeholder="—" /><span className={done ? 'set-done' : 'set-open'}>{done ? <><Check /> Listo</> : 'Pendiente'}</span></div>)}</div><div className="rest-card"><div><p>Descanso sugerido</p><strong>01:30</strong></div><span>Timer</span></div></div><div className="workout-sticky-actions"><button className="secondary-button" onClick={onBack}>Anterior</button><button className="primary-button">Guardar serie <ChevronRight /></button></div></>
+  return <div className="active-workout-screen">
+    <header className="active-workout-header">
+      <button className="workout-exit-button" aria-label="Salir del entrenamiento" onClick={onBack}><ArrowLeft /></button>
+      <div className="workout-progress-copy"><strong>3 / 7 ejercicios</strong><span>Fuerza A · Tren superior</span></div>
+      <button className="workout-pause-button" aria-label="Pausar entrenamiento">Pausar</button>
+    </header>
+    <div className="active-workout-content">
+      <div className="active-workout-progress" aria-label="Progreso del entrenamiento"><span /></div>
+      <section className="active-exercise-heading" aria-labelledby="active-exercise-title">
+        <p className="active-exercise-kicker">PECHO · BARRA OLÍMPICA</p>
+        <h1 id="active-exercise-title">Press de banca</h1>
+        <p>Controlá el movimiento y descansá cuando lo necesites.</p>
+      </section>
+      <section className="set-card" aria-labelledby="sets-title">
+        <div className="set-card-heading"><div><p className="member-label">SERIES DE HOY</p><h2 id="sets-title">3 series · 8–10 reps</h2></div><Dumbbell aria-hidden="true" /></div>
+        <div className="set-grid set-grid-head"><span>Serie</span><span>Kg</span><span>Reps</span><span>Estado</span></div>
+        <div className="set-grid set-grid-row set-complete"><strong>1</strong><span>50 kg</span><span>10</span><span className="set-status"><Check aria-hidden="true" /> Lista</span></div>
+        <div className="set-grid set-grid-row set-complete"><strong>2</strong><span>50 kg</span><span>10</span><span className="set-status"><Check aria-hidden="true" /> Lista</span></div>
+        <div className="set-active-row"><div className="set-grid set-grid-row"><strong>3</strong><label><span className="sr-only">Peso en kilogramos, serie 3</span><input inputMode="decimal" aria-label="Peso en kilogramos, serie 3" defaultValue="55" /></label><label><span className="sr-only">Repeticiones, serie 3</span><input inputMode="numeric" aria-label="Repeticiones, serie 3" placeholder="—" /></label><span className="set-status set-pending">Pendiente</span></div><button className="save-set-button">Guardar serie <Check aria-hidden="true" /></button></div>
+      </section>
+      <section className="rest-timer-card" aria-label="Descanso opcional"><div className="rest-timer-icon" aria-hidden="true">01:30</div><div><p>Descanso opcional</p><strong>Timer activado</strong></div><button aria-label="Pausar timer de descanso">Pausar</button></section>
+    </div>
+    <div className="workout-sticky-actions"><button className="next-exercise-button">Siguiente ejercicio <ChevronRight aria-hidden="true" /></button></div>
+  </div>
 }
 
 function MobileBottomNavigation({ active, onSelect }: { active: string; onSelect: (item: string) => void }) {
-  return <nav className="mobile-bottom-nav" aria-label="Navegación del socio">{['Inicio', 'Entrenar', 'Progreso', 'Perfil'].map((item) => <button key={item} className={active === item ? 'bottom-nav-active' : ''} onClick={() => onSelect(item)}><span>{item === 'Inicio' ? '⌂' : item === 'Entrenar' ? '＋' : item === 'Progreso' ? '↗' : '○'}</span>{item}</button>)}</nav>
+  const items = [
+    { label: 'Inicio', icon: House },
+    { label: 'Entrenar', icon: Dumbbell },
+    { label: 'Progreso', icon: ChartNoAxesColumnIncreasing },
+    { label: 'Beneficios', icon: Gift },
+    { label: 'Perfil', icon: UserRound },
+  ]
+
+  return <nav className="mobile-bottom-nav" aria-label="Navegación del socio">{items.map(({ label, icon: Icon }) => <button key={label} className={active === label ? 'bottom-nav-active' : ''} onClick={() => onSelect(label)} aria-current={active === label ? 'page' : undefined}><Icon aria-hidden="true" /><span>{label}</span></button>)}</nav>
 }
 
 export function MemberMobileHome() {
