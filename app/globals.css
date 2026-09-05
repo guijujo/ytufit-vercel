@@ -56,7 +56,7 @@ button,input,select { font:inherit; } button { cursor:pointer; }
 .streak-meta strong { color:#182033; margin-left:3px; }
 .week-days-compact { border:0; padding:13px 0 2px; }
 .freeze-row { align-items:flex-start; border-top:1px solid #f1eee8; color:#7d879d; font-size:10px; gap:6px; justify-content:flex-start; line-height:1.4; padding-top:11px; }
-.freeze-row svg { color:#635bff; height:14px; width:14px; }
+.freeze-row svg { color:var(--freeze); height:14px; width:14px; }
 .progress-summary { padding-bottom:15px; }
 .progress-summary-grid { gap:8px; margin-top:17px; }
 .progress-summary-grid div { border-right:1px solid #e8ebf2; display:flex; flex:1; flex-direction:column; gap:3px; }

@@ -36,7 +36,7 @@ function StreakCard({ onOpen }: { onOpen: () => void }) {
 
 function MemberHome({ onScreen }: { onScreen: (screen: MemberScreen) => void }) {
   return <>
-    <header className="mobile-header member-home-header"><div><p className="eyebrow">Potencia Fitness</p><h2>Hola, Juan</h2></div><button className="mobile-bell" aria-label="Notificaciones"><Bell /><span /></button></header>
+    <header className="mobile-header member-home-header"><div><p className="eyebrow">Potencia Fitness · Villa Crespo</p><h2>¡Hola, María!</h2></div><button className="mobile-bell" aria-label="Notificaciones"><Bell /><span /></button></header>
     <div className="member-scroll">
       <section className="membership-mobile membership-priority"><div><p className="membership-kicker">MEMBRESÍA ACTIVA</p><h3>Plan 3x semana</h3><p className="membership-expiry">Vence el 30/09/2026</p></div><div className="mini-y" aria-hidden="true">Y</div></section>
       <div className="mobile-section-heading"><div><p className="member-label">HOY, LUNES 7 DE SEPTIEMBRE</p><h2>Tu entrenamiento</h2></div><button onClick={() => onScreen('workout')}>Ver rutina</button></div>
