@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { ArrowLeft, Bell, Check, ChartNoAxesColumnIncreasing, ChevronRight, Dumbbell, Flame, Gift, House, Play, Snowflake, UserRound } from 'lucide-react'
+import { MemberTrainingRoutine } from '@/components/member-training-routine'
 
-type MemberScreen = 'home' | 'streak' | 'workout'
+type MemberScreen = 'home' | 'streak' | 'workout' | 'training'
 
 const week = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 
@@ -44,7 +45,7 @@ function MemberHome({ onScreen }: { onScreen: (screen: MemberScreen) => void }) 
       <StreakCard onOpen={() => onScreen('streak')} />
       <section className="member-card progress-summary"><div className="member-card-heading"><div><p className="member-label">ESTA SEMANA</p><h2>Tu progreso</h2></div><button className="card-link">Ver progreso <ChevronRight /></button></div><div className="progress-summary-grid"><div><strong>3</strong><span>Entrenamientos</span></div><div><strong>3</strong><span>Asistencias</span></div><div><strong>12.4k</strong><span>Volumen total</span></div></div></section>
     </div>
-    <MobileBottomNavigation active="Inicio" onSelect={() => undefined} />
+    <MobileBottomNavigation active="Inicio" onSelect={item => { if (item === 'Entrenar') onScreen('training') }} />
   </>
 }
 
@@ -93,7 +94,7 @@ function MobileBottomNavigation({ active, onSelect }: { active: string; onSelect
 
 export function MemberMobileHome() {
   const [screen, setScreen] = useState<MemberScreen>('home')
-  return <div className="mobile-frame member-mobile-system">{screen === 'home' && <MemberHome onScreen={setScreen} />}{screen === 'streak' && <StreakDetail onBack={() => setScreen('home')} />}{screen === 'workout' && <ActiveWorkout onBack={() => setScreen('home')} />}</div>
+  return <div className="mobile-frame member-mobile-system">{screen === 'home' && <MemberHome onScreen={setScreen} />}{screen === 'training' && <MemberTrainingRoutine onBack={() => setScreen('home')} onStart={() => setScreen('workout')} />}{screen === 'streak' && <StreakDetail onBack={() => setScreen('home')} />}{screen === 'workout' && <ActiveWorkout onBack={() => setScreen('home')} />}</div>
 }
 
 export default MemberMobileHome
