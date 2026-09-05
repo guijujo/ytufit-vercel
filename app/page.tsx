@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { MemberMobileHome } from '@/components/member-mobile-home'
 import {
   Activity,
   ArrowUpRight,
@@ -100,5 +101,5 @@ function MemberMobile() {
 
 export default function Page() {
   const [role, setRole] = useState<Role>('admin')
-  return role === 'member' ? <div className="member-stage"><div className="surface-switcher"><button className="brand-mark">Y</button><button onClick={() => setRole('admin')}>Admin Web</button><button onClick={() => setRole('trainer')}>Trainer Web</button><button className="switch-active">Member Mobile</button></div><MemberMobile /></div> : <><AdminShell role={role} setRole={setRole} /><button className="floating-member" onClick={() => setRole('member')}><span className="brand-mark">Y</span> Ver Member Mobile <ArrowUpRight /></button></>
+  return role === 'member' ? <div className="member-stage"><div className="surface-switcher"><button className="brand-mark">Y</button><button onClick={() => setRole('admin')}>Admin Web</button><button onClick={() => setRole('trainer')}>Trainer Web</button><button className="switch-active">Member Mobile</button></div><MemberMobileHome /></div> : <><AdminShell role={role} setRole={setRole} /><button className="floating-member" onClick={() => setRole('member')}><span className="brand-mark">Y</span> Ver Member Mobile <ArrowUpRight /></button></>
 }
