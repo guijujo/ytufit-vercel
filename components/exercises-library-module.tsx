@@ -1,0 +1,33 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import { Activity, ArrowUpRight, ChevronRight, Dumbbell, Grid2X2, List, MoreHorizontal, Plus, Search, SlidersHorizontal, Sparkles, Timer, X } from 'lucide-react'
+
+type Exercise = { name: string; muscle: string; equipment: string; level: string; origin: 'Global' | 'Gimnasio'; usage: number; duration: string; tone: string }
+
+const exercises: Exercise[] = [
+  { name: 'Press de banca', muscle: 'Pecho · Tríceps', equipment: 'Barra olímpica', level: 'Intermedio', origin: 'Global', usage: 34, duration: '45 min', tone: 'purple' },
+  { name: 'Sentadilla trasera', muscle: 'Piernas · Glúteos', equipment: 'Barra olímpica', level: 'Intermedio', origin: 'Global', usage: 29, duration: '50 min', tone: 'blue' },
+  { name: 'Remo con mancuerna', muscle: 'Espalda · Bíceps', equipment: 'Mancuerna', level: 'Inicial', origin: 'Global', usage: 26, duration: '35 min', tone: 'orange' },
+  { name: 'Peso muerto rumano', muscle: 'Isquios · Glúteos', equipment: 'Barra olímpica', level: 'Avanzado', origin: 'Global', usage: 18, duration: '40 min', tone: 'green' },
+  { name: 'Hip thrust en máquina', muscle: 'Glúteos', equipment: 'Máquina', level: 'Inicial', origin: 'Gimnasio', usage: 15, duration: '30 min', tone: 'pink' },
+  { name: 'Core anti-rotación', muscle: 'Core', equipment: 'Banda elástica', level: 'Inicial', origin: 'Gimnasio', usage: 9, duration: '20 min', tone: 'cyan' },
+]
+
+export function ExercisesLibraryModule() {
+  const [query, setQuery] = useState('')
+  const [tab, setTab] = useState<'Todos' | 'Globales' | 'Gimnasio'>('Todos')
+  const [view, setView] = useState<'grid' | 'list'>('grid')
+  const [selected, setSelected] = useState<Exercise | null>(null)
+  const [showCreate, setShowCreate] = useState(false)
+  const filtered = useMemo(() => exercises.filter(exercise => (tab === 'Todos' || (tab === 'Globales' ? exercise.origin === 'Global' : exercise.origin === 'Gimnasio')) && `${exercise.name} ${exercise.muscle} ${exercise.equipment}`.toLowerCase().includes(query.toLowerCase())), [query, tab])
+
+  return <div className="exercises-module">
+    <div className="page-heading exercises-heading"><div><p className="eyebrow">Entrenamiento · Biblioteca</p><h1>Ejercicios</h1><p className="subtitle">Una biblioteca clara para crear rutinas mejores.</p></div><button className="primary-button" onClick={() => setShowCreate(true)}><Plus className="size-4" />Nuevo ejercicio</button></div>
+    <div className="exercise-toolbar"><label className="exercise-search"><Search className="size-4" /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar ejercicio, músculo o equipo" aria-label="Buscar ejercicio" /></label><button className="exercise-filter"><SlidersHorizontal className="size-4" />Filtros<span>2</span></button><div className="exercise-view-toggle" role="group" aria-label="Cambiar vista"><button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')} aria-label="Vista de grilla"><Grid2X2 className="size-4" /></button><button className={view === 'list' ? 'is-active' : ''} onClick={() => setView('list')} aria-label="Vista de lista"><List className="size-4" /></button></div></div>
+    <div className="exercise-tabs" role="tablist" aria-label="Origen de ejercicios">{(['Todos', 'Globales', 'Gimnasio'] as const).map(item => <button key={item} role="tab" aria-selected={tab === item} className={tab === item ? 'is-active' : ''} onClick={() => setTab(item)}>{item}<span>{item === 'Todos' ? exercises.length : exercises.filter(exercise => exercise.origin === (item === 'Globales' ? 'Global' : 'Gimnasio')).length}</span></button>)}</div>
+    {filtered.length ? <div className={`exercise-cards ${view === 'list' ? 'is-list' : ''}`}>{filtered.map(exercise => <article className="exercise-card" key={exercise.name} onClick={() => setSelected(exercise)}><div className={`exercise-visual exercise-tone-${exercise.tone}`}><Dumbbell className="size-7" /><span>{exercise.origin === 'Global' ? 'Biblioteca global' : 'Creado por tu gimnasio'}</span></div><div className="exercise-card-body"><div className="exercise-card-title"><div><p className="exercise-kicker">{exercise.muscle}</p><h2>{exercise.name}</h2></div><button className="exercise-more" aria-label={`Más opciones para ${exercise.name}`} onClick={event => event.stopPropagation()}><MoreHorizontal className="size-4" /></button></div><div className="exercise-meta"><span><Activity className="size-3.5" />{exercise.equipment}</span><span><Timer className="size-3.5" />{exercise.duration}</span></div><div className="exercise-card-footer"><span className="level-badge">{exercise.level}</span><span className="usage-copy">Usado en {exercise.usage} rutinas<ChevronRight className="size-3.5" /></span></div></div></article>)}</div> : <div className="exercise-empty"><Sparkles className="size-6" /><h2>No encontramos ejercicios</h2><p>Probá con otro nombre, músculo o equipo.</p></div>}
+    {selected && <div className="exercise-overlay" onClick={() => setSelected(null)}><aside className="exercise-drawer" onClick={event => event.stopPropagation()}><button className="drawer-close" onClick={() => setSelected(null)} aria-label="Cerrar detalle"><X className="size-4" /></button><div className="drawer-visual exercise-tone-purple"><Dumbbell className="size-9" /></div><p className="eyebrow">Detalle de ejercicio</p><h2>{selected.name}</h2><p className="drawer-muted">{selected.muscle} · {selected.equipment}</p><div className="drawer-stats"><div><strong>{selected.usage}</strong><span>rutinas activas</span></div><div><strong>{selected.duration}</strong><span>duración sugerida</span></div></div><button className="primary-button drawer-action"><ArrowUpRight className="size-4" />Usar en una rutina</button></aside></div>}
+    {showCreate && <div className="exercise-overlay" onClick={() => setShowCreate(false)}><aside className="exercise-drawer" onClick={event => event.stopPropagation()}><button className="drawer-close" onClick={() => setShowCreate(false)} aria-label="Cerrar nuevo ejercicio"><X className="size-4" /></button><p className="eyebrow">Biblioteca del gimnasio</p><h2>Nuevo ejercicio</h2><p className="drawer-muted">Creá un ejercicio personalizado para tus rutinas.</p><label className="drawer-field">Nombre<input placeholder="Ej: Press landmine" /></label><label className="drawer-field">Grupo muscular<select defaultValue=""><option value="" disabled>Seleccionar grupo</option><option>Pecho</option><option>Espalda</option><option>Piernas</option></select></label><button className="primary-button drawer-action" onClick={() => setShowCreate(false)}><Plus className="size-4" />Guardar ejercicio</button></aside></div>}
+  </div>
+}
