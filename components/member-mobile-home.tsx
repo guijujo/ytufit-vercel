@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Bell, Check, ChevronRight, Dumbbell, Flame, Play, Snowflake } from 'lucide-react'
+import { ArrowLeft, Bell, Check, ChartNoAxesColumnIncreasing, ChevronRight, Dumbbell, Flame, Gift, House, Play, Snowflake, UserRound } from 'lucide-react'
 
 type MemberScreen = 'home' | 'streak' | 'workout'
 
@@ -57,7 +57,15 @@ function ActiveWorkout({ onBack }: { onBack: () => void }) {
 }
 
 function MobileBottomNavigation({ active, onSelect }: { active: string; onSelect: (item: string) => void }) {
-  return <nav className="mobile-bottom-nav" aria-label="Navegación del socio">{['Inicio', 'Entrenar', 'Progreso', 'Perfil'].map((item) => <button key={item} className={active === item ? 'bottom-nav-active' : ''} onClick={() => onSelect(item)}><span>{item === 'Inicio' ? '⌂' : item === 'Entrenar' ? '＋' : item === 'Progreso' ? '↗' : '○'}</span>{item}</button>)}</nav>
+  const items = [
+    { label: 'Inicio', icon: House },
+    { label: 'Entrenar', icon: Dumbbell },
+    { label: 'Progreso', icon: ChartNoAxesColumnIncreasing },
+    { label: 'Beneficios', icon: Gift },
+    { label: 'Perfil', icon: UserRound },
+  ]
+
+  return <nav className="mobile-bottom-nav" aria-label="Navegación del socio">{items.map(({ label, icon: Icon }) => <button key={label} className={active === label ? 'bottom-nav-active' : ''} onClick={() => onSelect(label)} aria-current={active === label ? 'page' : undefined}><Icon aria-hidden="true" /><span>{label}</span></button>)}</nav>
 }
 
 export function MemberMobileHome() {
